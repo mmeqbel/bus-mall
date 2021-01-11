@@ -1,0 +1,28 @@
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 80%;
+    margin: auto;
+    background-color: rgb(233, 237, 240);
+}
+img{
+    box-shadow: 10px 10px 5px grey;
+    width: 30%;
+    margin-left: 16px;
+    height: 200px;
+}
+#imgDiv{
+    padding-top: 100px;
+}
+table{
+    margin-left: 16px;
+    margin-top: 16px;
+}
+table,td,th,tr{
+    width: 80%;
+    border: 2px solid red;
+    border-collapse: collapse;
+}
+button{
+    margin-left: 16px;
+    margin-top: 16px;  
+}
