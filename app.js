@@ -40,13 +40,16 @@ var seconedImg = document.getElementById("seconed-img");
 var thirdImg = document.getElementById("third-img");
 var resultButton = document.getElementById("showResult");
 var votesSection = document.getElementById("votes");
+var canvas = document.getElementById("myChart");
 resultButton.style.visibility = "hidden";
-votesSection.style.visibility = "hidden";
 resultButton.addEventListener("click", showResult);
 
 
 var round = 1;
-
+//avoid repeat in the next round
+var rnd1=-1;
+var rnd2=-1;
+var rnd3=-1;
 renderImage();
 function renderImage() {
     if (!(round <= 25)) {
@@ -62,9 +65,13 @@ function renderImage() {
         random1 = Math.floor(Math.random() * (products.length - 0)) + 0;
         random2 = Math.floor(Math.random() * (products.length - 0)) + 0;
         random3 = Math.floor(Math.random() * (products.length - 0)) + 0;
+        var repeated=isRepeted(rnd1,rnd2,rnd3,random1,random2,random3);
 
-    } while (random1 == random2 || random2 == random3 || random1 == random3)//three different image
+    } while ((random1 == random2 || random2 == random3 || random1 == random3)||repeated)//three different image
 
+    rnd1=random1;
+    rnd2=random2;
+    rnd3=random3;
     firstImg.src = products[random1].img;
     products[random1].display();
     firstImg.addEventListener('click', click);
@@ -75,6 +82,19 @@ function renderImage() {
     products[random3].display();
     thirdImg.addEventListener('click', click);
     round++;
+}
+function isRepeted(rnd1,rnd2,rnd3,random1,random2,random3){
+var arr1=[rnd1,rnd2,rnd3];
+var arr2=[random1,random2,random3];
+for(var i=0;i<arr1.length;i++){
+    for(var j=0;j<arr2.length;j++){
+        if(arr1[i]==arr2[j]){
+            console.log("repeated");
+            return true;
+        }
+    }
+}
+return false;
 }
 function click(event) {
     var selectedImgUrl = event.target.getAttribute('src');
@@ -91,10 +111,11 @@ function addVote(selectedImgUrl) {
             break;
         }//end if
     }//end for
-    
+
 }
 function showResult() {
-    var table = document.createElement("table");
+    showResultInChart();
+    /*var table = document.createElement("table");
     var headerRow = document.createElement("tr");
     var headerData1 = document.createElement("th");
     var headerData2 = document.createElement("th");
@@ -112,14 +133,14 @@ function showResult() {
     for (var i = 0; i < products.length; i++) {
         var tr = document.createElement("tr");
         var data1 = document.createElement("td");
-        data1.innerText=products[i].name;
+        data1.innerText = products[i].name;
         var data2 = document.createElement("td");
-        data2.innerText=products[i].clickedTimes;
+        data2.innerText = products[i].clickedTimes;
         var data3 = document.createElement("td");
-        data3.innerText=products[i].displayTimes;
+        data3.innerText = products[i].displayTimes;
         var data4 = document.createElement("td");
-        var percentage=products[i].clickedTimes/products[i].displayTimes;
-        data4.innerText=percentage.toFixed(2);
+        var percentage = products[i].clickedTimes / products[i].displayTimes;
+        data4.innerText = percentage.toFixed(2);
         tr.append(data1);
         tr.append(data2);
         tr.append(data3);
@@ -129,6 +150,85 @@ function showResult() {
     console.log(table);
     votesSection.append(table);
     votesSection.style.visibility = "visible";
+*/
 
-
+}
+function showResultInChart() {
+     var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: getProductsNames(),
+            datasets: [{
+                label: '# of Votes',
+                data: getProductsData(),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+function getProductsNames(){
+    var labels=[];
+    for(var i=0;i<products.length;i++){
+        labels.push(products[i].name);
+    }  
+    return labels;  
+}
+function getProductsData(){
+    var labels=[];
+    for(var i=0;i<products.length;i++){
+        labels.push(products[i].clickedTimes);
+    }  
+    return labels;  
 }
