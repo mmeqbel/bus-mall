@@ -1,21 +1,23 @@
 'use strict'
 
-var products = [];
+var products = []; //hold the product objects
 
 
-function Product(name, img) {
+function Product(name, img) { //products comstructor
     this.name = name;
     this.img = img;
     this.displayTimes = 0;
     this.clickedTimes = 0;
     products.push(this);
 }
-Product.prototype.display = function () {
+Product.prototype.display = function () { //invoked when the product appear in the screen 
     this.displayTimes++;
 }
-Product.prototype.click = function () {
+Product.prototype.click = function () {// invoked when the product clicked in the screen
     this.clickedTimes++;
 }
+
+// data declaration
 
 var o1 = new Product("bag", "img/bag.jpg");
 var o2 = new Product("banana", "img/banana.jpg");
@@ -37,10 +39,10 @@ var o17 = new Product("unicorn", "img/unicorn.jpg");
 var o18 = new Product("water-can", "img/water-can.jpg");
 var o19 = new Product("wine-glass", "img/wine-glass.jpg");
 
-if (localStorage!==null) {
+if (localStorage!==null) {//determine if there any data stored locally
     if(localStorage.length!==0){
         var votedProducts = Object.values(JSON.parse(localStorage.getItem("products")));//load the already voted product
-        loadTransactions(votedProducts);
+        loadTransactions(votedProducts);//sync the product array with the local array
     }
     
 }
@@ -60,7 +62,7 @@ var votesSection = document.getElementById("votes");
 var canvas = document.getElementById("myChart");
 var resetButton=document.getElementById("reset");
 resetButton.addEventListener("click",reset);
-resultButton.style.visibility = "hidden";
+resultButton.style.visibility = "hidden";   // result button are hidden until the vote round finish
 resultButton.addEventListener("click", showResult);
 function reset(){
     location.reload();
@@ -68,11 +70,13 @@ function reset(){
    
 }
 
-var round = 1;
+var round = 1;//hold the current round (Conter)
+
 //avoid repeat in the next round
 var rnd1 = -1;
 var rnd2 = -1;
 var rnd3 = -1;
+
 renderImage();
 
 function renderImage() {
