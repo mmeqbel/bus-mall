@@ -5,10 +5,15 @@ body{
     background-color: rgb(233, 237, 240);
 }
 img{
-    box-shadow: 10px 10px 5px grey;
+    
     width: 30%;
     margin-left: 16px;
     height: 200px;
+    transition:0.5s;
+    transition-timing-function: linear
+}
+img:hover{
+    box-shadow: 10px 10px 5px grey;
 }
 #imgDiv{
     padding-top: 100px;
@@ -24,5 +29,15 @@ table,td,th,tr{
 }
 button{
     margin-left: 16px;
-    margin-top: 16px;  
+    margin-top: 16px; 
+    background-color: black;
+    color: white; 
+    box-shadow: 10px 10px 5px grey;
+    transition:0.5s;
+    transition-timing-function: linear
+}
+button:hover{
+    background-color: white;
+    color: black; 
+    outline: 1px solid black; 
 }
