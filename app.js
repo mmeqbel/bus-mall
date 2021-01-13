@@ -1,6 +1,8 @@
 'use strict'
 
 var products = [];
+
+
 function Product(name, img) {
     this.name = name;
     this.img = img;
@@ -14,6 +16,7 @@ Product.prototype.display = function () {
 Product.prototype.click = function () {
     this.clickedTimes++;
 }
+
 var o1 = new Product("bag", "img/bag.jpg");
 var o2 = new Product("banana", "img/banana.jpg");
 var o3 = new Product("bathroom", "img/bathroom.jpg");
@@ -24,15 +27,29 @@ var o7 = new Product("chair", "img/chair.jpg");
 var o8 = new Product("cthulhu", "img/cthulhu.jpg");
 var o9 = new Product("dog-duck", "img/dog-duck.jpg");
 var o10 = new Product("dragon", "img/dragon.jpg");
-var o12 = new Product("pen", "img/pen.jpg");
-var o13 = new Product("pet-sweep", "img/pet-sweep.jpg");
-var o14 = new Product("scissors", "img/scissors.jpg");
-var o15 = new Product("shark", "img/shark.jpg");
-var o16 = new Product("sweep", "img/sweep.png");
-var o17 = new Product("tauntaun", "img/tauntaun.jpg");
-var o18 = new Product("unicorn", "img/unicorn.jpg");
-var o19 = new Product("water-can", "img/water-can.jpg");
-var o20 = new Product("wine-glass", "img/wine-glass.jpg");
+var o11 = new Product("pen", "img/pen.jpg");
+var o12 = new Product("pet-sweep", "img/pet-sweep.jpg");
+var o13 = new Product("scissors", "img/scissors.jpg");
+var o14 = new Product("shark", "img/shark.jpg");
+var o15 = new Product("sweep", "img/sweep.png");
+var o16 = new Product("tauntaun", "img/tauntaun.jpg");
+var o17 = new Product("unicorn", "img/unicorn.jpg");
+var o18 = new Product("water-can", "img/water-can.jpg");
+var o19 = new Product("wine-glass", "img/wine-glass.jpg");
+
+if (localStorage!==null) {
+    if(localStorage.length!==0){
+        var votedProducts = Object.values(JSON.parse(localStorage.getItem("products")));//load the already voted product
+        loadTransactions(votedProducts);
+    }
+    
+}
+function loadTransactions(votedProducts){
+    for(var i=0;i<products.length;i++){
+        products[i].clickedTimes=votedProducts[i].clickedTimes;//load clicked times
+        products[i].displayTimes=votedProducts[i].displayTimes;//load display times
+    }
+}
 
 
 var firstImg = document.getElementById("first-img");
@@ -41,16 +58,23 @@ var thirdImg = document.getElementById("third-img");
 var resultButton = document.getElementById("showResult");
 var votesSection = document.getElementById("votes");
 var canvas = document.getElementById("myChart");
+var resetButton=document.getElementById("reset");
+resetButton.addEventListener("click",reset);
 resultButton.style.visibility = "hidden";
 resultButton.addEventListener("click", showResult);
-
+function reset(){
+    location.reload();
+    localStorage.clear();
+   
+}
 
 var round = 1;
 //avoid repeat in the next round
-var rnd1=-1;
-var rnd2=-1;
-var rnd3=-1;
+var rnd1 = -1;
+var rnd2 = -1;
+var rnd3 = -1;
 renderImage();
+
 function renderImage() {
     if (!(round <= 25)) {
         resultButton.style.visibility = "visible";
@@ -65,13 +89,13 @@ function renderImage() {
         random1 = Math.floor(Math.random() * (products.length - 0)) + 0;
         random2 = Math.floor(Math.random() * (products.length - 0)) + 0;
         random3 = Math.floor(Math.random() * (products.length - 0)) + 0;
-        var repeated=isRepeted(rnd1,rnd2,rnd3,random1,random2,random3);
+        var repeated = isRepeted(rnd1, rnd2, rnd3, random1, random2, random3);
 
-    } while ((random1 == random2 || random2 == random3 || random1 == random3)||repeated)//three different image
+    } while ((random1 == random2 || random2 == random3 || random1 == random3) || repeated)//three different image
 
-    rnd1=random1;
-    rnd2=random2;
-    rnd3=random3;
+    rnd1 = random1;
+    rnd2 = random2;
+    rnd3 = random3;
     firstImg.src = products[random1].img;
     products[random1].display();
     firstImg.addEventListener('click', click);
@@ -83,18 +107,18 @@ function renderImage() {
     thirdImg.addEventListener('click', click);
     round++;
 }
-function isRepeted(rnd1,rnd2,rnd3,random1,random2,random3){
-var arr1=[rnd1,rnd2,rnd3];
-var arr2=[random1,random2,random3];
-for(var i=0;i<arr1.length;i++){
-    for(var j=0;j<arr2.length;j++){
-        if(arr1[i]==arr2[j]){
-            console.log("repeated");
-            return true;
+function isRepeted(rnd1, rnd2, rnd3, random1, random2, random3) {
+    var arr1 = [rnd1, rnd2, rnd3];
+    var arr2 = [random1, random2, random3];
+    for (var i = 0; i < arr1.length; i++) {
+        for (var j = 0; j < arr2.length; j++) {
+            if (arr1[i] == arr2[j]) {
+                console.log("repeated");
+                return true;
+            }
         }
     }
-}
-return false;
+    return false;
 }
 function click(event) {
     var selectedImgUrl = event.target.getAttribute('src');
@@ -106,55 +130,20 @@ function addVote(selectedImgUrl) {
     for (var i = 0; i < products.length; i++) {
         if (products[i].img == selectedImgUrl) {
             products[i].click();
-
-            console.log(products[i].clickedTimes);
             break;
         }//end if
     }//end for
-
+    syncLocally(products);
+}
+function syncLocally() {
+    localStorage.setItem("products", JSON.stringify(products));
 }
 function showResult() {
     showResultInChart();
-    /*var table = document.createElement("table");
-    var headerRow = document.createElement("tr");
-    var headerData1 = document.createElement("th");
-    var headerData2 = document.createElement("th");
-    var headerData3 = document.createElement("th");
-    var headerData4 = document.createElement("th");
-    headerData1.innerText = "Product Name";
-    headerData2.innerText = "Votes";
-    headerData3.innerText = "Display times";
-    headerData4.innerText = "V/D";
-    headerRow.append(headerData1);
-    headerRow.append(headerData2);
-    headerRow.append(headerData3);
-    headerRow.append(headerData4);
-    table.append(headerRow);
-    for (var i = 0; i < products.length; i++) {
-        var tr = document.createElement("tr");
-        var data1 = document.createElement("td");
-        data1.innerText = products[i].name;
-        var data2 = document.createElement("td");
-        data2.innerText = products[i].clickedTimes;
-        var data3 = document.createElement("td");
-        data3.innerText = products[i].displayTimes;
-        var data4 = document.createElement("td");
-        var percentage = products[i].clickedTimes / products[i].displayTimes;
-        data4.innerText = percentage.toFixed(2);
-        tr.append(data1);
-        tr.append(data2);
-        tr.append(data3);
-        tr.append(data4);
-        table.append(tr);
-    }
-    console.log(table);
-    votesSection.append(table);
-    votesSection.style.visibility = "visible";
-*/
-
 }
 function showResultInChart() {
-     var ctx = document.getElementById('myChart');
+    products = JSON.parse(localStorage.getItem("products"));
+    var ctx = document.getElementById('myChart');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -218,17 +207,19 @@ function showResultInChart() {
         }
     });
 }
-function getProductsNames(){
-    var labels=[];
-    for(var i=0;i<products.length;i++){
+function getProductsNames() {
+
+    var labels = [];
+    for (var i = 0; i < products.length; i++) {
         labels.push(products[i].name);
-    }  
-    return labels;  
+    }
+    return labels;
 }
-function getProductsData(){
-    var labels=[];
-    for(var i=0;i<products.length;i++){
+function getProductsData() {
+    var labels = [];
+    for (var i = 0; i < products.length; i++) {
         labels.push(products[i].clickedTimes);
-    }  
-    return labels;  
+    }
+    return labels;
 }
+
